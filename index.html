@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080914" />
+  <meta name="description" content="NEON DASH — premium cyberpunk arcade runner." />
+  <title>NEON DASH | Cyberpunk Arcade</title>
+
+  <!-- Tailwind CSS v4 browser build -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <!-- Import map for Three.js -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"
+      }
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body class="min-h-screen text-white">
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <div class="scanlines"></div>
+
+  <main class="app-shell mx-auto w-full max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+    <header class="topbar flex flex-wrap items-center justify-between gap-4">
+      <a class="brand flex items-center gap-3" href="#" aria-label="NEON DASH home">
+        <span class="brand-mark">N<span>+</span></span>
+        <span>
+          <span class="brand-name block">NEON DASH</span>
+          <span class="brand-caption block">CYBER ARCADE SYSTEM</span>
+        </span>
+      </a>
+
+      <div class="flex items-center gap-3">
+        <div class="wallet-chip"><span class="coin-glyph">◈</span><span id="walletCoins">0</span><span class="wallet-label">COINS</span></div>
+        <button id="soundButton" class="icon-button" type="button" aria-label="Toggle sound" title="Toggle sound">♫</button>
+      </div>
+    </header>
+
+    <section id="menuScreen" class="screen active">
+      <div class="hero-grid grid gap-8 lg:grid-cols-[1.12fr_.88fr] lg:items-center">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="pulse-dot"></span> SYSTEM ONLINE <span class="eyebrow-line"></span> SECTOR 09</div>
+          <h1 class="hero-title">RUN THE<br><span>NEON CITY.</span></h1>
+          <p class="hero-description">Masuki kota futuristik, hindari rintangan, kumpulkan energi, dan jadilah legenda di jalanan neon.</p>
+
+          <div class="flex flex-wrap gap-3">
+            <button id="playButton" class="btn btn-primary" type="button"><span>▶</span> START RUN</button>
+            <button id="shopButton" class="btn btn-secondary" type="button">◈ CHARACTER LAB</button>
+          </div>
+
+          <div class="stats-grid grid grid-cols-3 gap-3">
+            <div class="stat-card"><span class="stat-label">BEST SCORE</span><strong id="menuBest">0</strong></div>
+            <div class="stat-card"><span class="stat-label">TOTAL COINS</span><strong id="menuCoins">0</strong></div>
+            <div class="stat-card"><span class="stat-label">RUNS</span><strong id="menuGames">0</strong></div>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="visual-topline"><span>PLAYER LOADOUT</span><span class="online-tag">● READY</span></div>
+          <div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div>
+          <div class="hero-character" id="menuAvatar">⚡</div>
+          <div class="visual-floor"></div>
+          <div class="visual-name"><span class="stat-label">SELECTED RUNNER</span><strong id="menuCharacter">NEON RUNNER</strong></div>
+          <button id="changeCharacterButton" class="change-runner" type="button">CHANGE RUNNER ↗</button>
+          <div class="visual-corner">ND / 001</div>
+        </div>
+      </div>
+
+      <div class="bottom-strip grid gap-4 md:grid-cols-3">
+        <div><span class="feature-icon">✦</span><strong>ENDLESS RUN</strong><p>Seberapa jauh kamu bisa bertahan?</p></div>
+        <div><span class="feature-icon">⬡</span><strong>POWER UP</strong><p>Ambil energi spesial di sepanjang jalan.</p></div>
+        <div><span class="feature-icon">◈</span><strong>COLLECT & UNLOCK</strong><p>Kumpulkan koin dan buka karakter baru.</p></div>
+      </div>
+      <p class="controls-hint">CONTROLS: <kbd>SPACE</kbd> / <kbd>↑</kbd> / <kbd>W</kbd> TO JUMP <span>•</span> <kbd>P</kbd> TO PAUSE</p>
+    </section>
+
+    <section id="shopScreen" class="screen">
+      <div class="section-heading flex flex-wrap items-end justify-between gap-4">
+        <div><div class="eyebrow">RUNNER COLLECTION / 05</div><h2>CHARACTER <span>LAB.</span></h2><p>Pilih identitasmu sebelum memasuki kota.</p></div>
+        <div class="shop-balance">◈ <span id="shopCoins">0</span> COINS</div>
+      </div>
+      <div id="characterGrid" class="character-grid grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+      <div class="mt-8 flex flex-wrap gap-3"><button id="shopBack" class="btn btn-secondary" type="button">← BACK TO MENU</button></div>
+    </section>
+
+    <section id="gameScreen" class="screen">
+      <div class="game-topbar flex flex-wrap items-center justify-between gap-3">
+        <button id="quitButton" class="small-action" type="button">← EXIT RUN</button>
+        <div class="game-mode-wrap"><span class="stat-label">DIFFICULTY</span><button id="gameModeLabel" class="mode-button" type="button">NORMAL ↻</button></div>
+        <button id="pauseButton" class="small-action" type="button">Ⅱ PAUSE</button>
+      </div>
+
+      <div class="hud-grid grid grid-cols-2 gap-2 sm:grid-cols-5">
+        <div class="hud-card"><span>SCORE</span><strong id="score">0</strong></div>
+        <div class="hud-card"><span>BEST</span><strong id="bestScore">0</strong></div>
+        <div class="hud-card"><span>RUN COINS</span><strong id="runCoins">0</strong></div>
+        <div class="hud-card"><span>LEVEL</span><strong id="level">01</strong></div>
+        <div class="hud-card"><span>SPEED</span><strong id="speed">1.0x</strong></div>
+      </div>
+
+      <div class="game-frame">
+        <div class="canvas-topline"><span>NEON CITY / LIVE SIMULATION</span><span id="gameStatus">● RUNNING</span></div>
+        <div id="gameViewport" class="game-viewport">
+          <div id="loadingMessage" class="loading-message">INITIALIZING NEON CITY...</div>
+        </div>
+        <div class="game-bottomline"><span>SECTOR 09</span><span id="gameModeHint">NORMAL MODE</span><span>ND-ARCADE</span></div>
+      </div>
+
+      <div class="game-footer flex flex-wrap items-center justify-between gap-3">
+        <div id="powerIndicators" class="power-indicators"><span class="power-pill">SHIELD —</span><span class="power-pill">MAGNET —</span><span class="power-pill">DOUBLE —</span></div>
+        <button id="mobileJump" class="btn btn-primary mobile-jump" type="button">JUMP ↑</button>
+        <p class="controls-hint">SPACE / ↑ / W = JUMP &nbsp; • &nbsp; P = PAUSE</p>
+      </div>
+    </section>
+
+    <section id="pauseScreen" class="modal-screen">
+      <div class="modal-card"><div class="eyebrow">SYSTEM PAUSED</div><h2>TAKE A <span>BREATHER.</span></h2><p>City simulation is on hold.</p>
+        <button id="resumeButton" class="btn btn-primary w-full" type="button">▶ RESUME</button>
+        <button id="restartButton" class="btn btn-secondary w-full" type="button">↻ RESTART RUN</button>
+        <button id="pauseQuitButton" class="text-button" type="button">EXIT TO MENU</button>
+      </div>
+    </section>
+
+    <section id="gameOverScreen" class="modal-screen">
+      <div class="modal-card result-card"><div class="eyebrow">RUN TERMINATED / RESULTS</div><h2>GAME <span>OVER.</span></h2><div id="newRecordMessage" class="record-message hidden">✦ NEW PERSONAL RECORD ✦</div>
+        <div class="result-score"><span>FINAL SCORE</span><strong id="finalScore">0</strong></div>
+        <div class="result-grid"><div><span>COINS EARNED</span><strong id="finalCoins">0</strong></div><div><span>BEST SCORE</span><strong id="finalBest">0</strong></div><div><span>LEVEL REACHED</span><strong id="finalLevel">1</strong></div></div>
+        <button id="retryButton" class="btn btn-primary w-full" type="button">↻ PLAY AGAIN</button>
+        <button id="gameOverMenuButton" class="btn btn-secondary w-full" type="button">BACK TO MENU</button>
+      </div>
+    </section>
+
+    <footer class="footer flex flex-wrap items-center justify-between gap-2"><span>© 2026 NEON DASH ARCADE</span><span>ONE CITY. ENDLESS POSSIBILITIES.</span></footer>
+  </main>
+
+  <script type="module" src="./script.js"></script>
+</body>
+</html>
